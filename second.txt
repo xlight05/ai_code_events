@@ -1,0 +1,43 @@
+<explanation>
+This content-based routing scenario demonstrates how to route HTTP requests to different endpoints based on the content of the request. The service listens on port 8080 and has a single resource that accepts POST requests. It examines the payload of the request and routes it to different endpoints based on the "type" field in the JSON payload. The service then forwards the request to the appropriate endpoint and returns the response to the client.
+</explanation>
+
+<ballerina_code>
+import ballerina/http;
+import ballerina/log;
+
+// Define the service endpoints
+final http:Client typeAEndpoint = check new ("http://typea.example.com");
+final http:Client typeBEndpoint = check new ("http://typeb.example.com");
+final http:Client defaultEndpoint = check new ("http://default.example.com");
+
+service / on new http:Listener(8080) {
+    resource function post route(@http:Payload json payload) returns json|error {
+        // Extract the "type" field from the payload
+        string requestType = check payload.type;
+
+        http:Client targetEndpoint;
+
+        // Route based on the request type
+        match requestType {
+            "A" => {
+                targetEndpoint = typeAEndpoint;
+                log:printInfo("Routing to Type A endpoint");
+            }
+            "B" => {
+                targetEndpoint = typeBEndpoint;
+                log:printInfo("Routing to Type B endpoint");
+            }
+            _ => {
+                targetEndpoint = defaultEndpoint;
+                log:printInfo("Routing to default endpoint");
+            }
+        }
+
+        // Forward the request to the selected endpoint
+        json response = check targetEndpoint->post("/process", payload);
+
+        return response;
+    }
+}
+</ballerina_code>

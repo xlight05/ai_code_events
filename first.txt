@@ -1,0 +1,34 @@
+<explanation>
+This Ballerina code demonstrates a header-based routing scenario. The service listens on port 8080 and routes incoming requests based on the "X-Route" header value. If the header is "route1", it forwards the request to "http://localhost:9090/service1". If the header is "route2", it forwards to "http://localhost:9091/service2". For any other header value or if the header is missing, it returns a 400 Bad Request response. The code uses Ballerina's built-in HTTP client to forward requests and handle responses.
+</explanation>
+
+<ballerina_code>
+import ballerina/http;
+import ballerina/io;
+
+service / on new http:Listener(8080) {
+    resource function post route(@http:Header {name: "X-Route"} string route, http:Request req) returns http:Response|error {
+        http:Client clientEp;
+        http:Response response = new;
+
+        match route {
+            "route1" => {
+                clientEp = check new ("http://localhost:9090");
+                response = check clientEp->forward("/service1", req);
+            }
+            "route2" => {
+                clientEp = check new ("http://localhost:9091");
+                response = check clientEp->forward("/service2", req);
+            }
+            _ => {
+                response.statusCode = 400;
+                response.setPayload("Invalid or missing X-Route header");
+                return response;
+            }
+        }
+
+        io:println("Routed to: " + route);
+        return response;
+    }
+}
+</ballerina_code>
