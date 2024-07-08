@@ -24,7 +24,8 @@ async def code_generator():
             char = file.read(5)
             if not char:
                 break
-            yield f"event: content\ndata: {char}\n\n"
+            data = {"delta":{"type":"text_delta","text":char}}
+            yield f"event: content_delta\ndata: {json.dumps(data)}\n\n"
     yield f"event: message_stop\ndata: {""}\n\n"
    
     yield f"event: compile_started\ndata: {""}\n\n"
@@ -37,7 +38,8 @@ async def code_generator():
             char = file.read(5)
             if not char:
                 break
-            yield f"event: content\ndata: {char}\n\n"
+            data = {"delta":{"type":"text_delta","text":char}}
+            yield f"event: content_delta\ndata: {json.dumps(data)}\n\n"
 
     yield f"event: message_stop\ndata: {""}\n\n"
     yield f"event: resp_stop\ndata: {""}\n\n"
