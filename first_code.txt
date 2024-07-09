@@ -1,8 +1,3 @@
-<explanation>
-This Ballerina code demonstrates a header-based routing scenario. The service listens on port 8080 and routes incoming requests based on the "X-Route" header value. If the header is "route1", it forwards the request to "http://localhost:9090/service1". If the header is "route2", it forwards to "http://localhost:9091/service2". For any other header value or if the header is missing, it returns a 400 Bad Request response. The code uses Ballerina's built-in HTTP client to forward requests and handle responses.
-</explanation>
-
-<ballerina_code>
 import ballerina/http;
 import ballerina/io;
 
@@ -31,4 +26,3 @@ service / on new http:Listener(8080) {
         return response;
     }
 }
-</ballerina_code>

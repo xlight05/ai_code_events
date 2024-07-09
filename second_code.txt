@@ -1,8 +1,3 @@
-<explanation>
-This content-based routing scenario demonstrates how to route HTTP requests to different endpoints based on the content of the request. The service listens on port 8080 and has a single resource that accepts POST requests. It examines the payload of the request and routes it to different endpoints based on the "type" field in the JSON payload. The service then forwards the request to the appropriate endpoint and returns the response to the client.
-</explanation>
-
-<ballerina_code>
 import ballerina/http;
 import ballerina/log;
 
@@ -40,4 +35,3 @@ service / on new http:Listener(8080) {
         return response;
     }
 }
-</ballerina_code>
